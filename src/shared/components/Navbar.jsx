@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Menu, LogOut } from 'lucide-react';
+import { Menu, Info } from 'lucide-react';  // Troquei o ícone LogOut por Info
 import { Button, IconButton } from '@mui/material';
-import LogoutDialog from './LogoutDialog';
+import EpanetInfoDialog from './EpanetInfoDialog';  // Importa o diálogo igual no Sidebar
 
-export default function Navbar({ onMenuToggle, isSidebarOpen, onLogout }) {
+export default function Navbar({ onMenuToggle, isSidebarOpen }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -22,19 +22,12 @@ export default function Navbar({ onMenuToggle, isSidebarOpen, onLogout }) {
           onClick={() => setDialogOpen(true)}
           className="flex items-center gap-2 text-gray-800"
         >
-          <LogOut className="h-4 w-4" />
-          Sair
+          <Info className="h-4 w-4" />
+          Sobre o EPANET
         </Button>
       </nav>
 
-      <LogoutDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onConfirm={() => {
-          setDialogOpen(false);
-          onLogout?.();
-        }}
-      />
+      <EpanetInfoDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </>
   );
 }
