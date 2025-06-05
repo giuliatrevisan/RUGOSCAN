@@ -1,15 +1,16 @@
-// src/shared/components/Sidebar.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LogOut, LayoutDashboard, User, HelpCircle, Settings } from 'lucide-react';
-import LogoutDialog from './LogoutDialog';
+import { LayoutDashboard, Info, BookOpen, BarChart2 } from 'lucide-react'; // Adiciona BarChart2 para Dashboards
+import EpanetInfoDialog from './EpanetInfoDialog';
 
-export default function Sidebar({ isOpen, onLogout }) {
+export default function Sidebar({ isOpen }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const items = [
     { label: 'Relatório', path: '/', icon: <LayoutDashboard size={18} /> },
-    ];
+    { label: 'Tutorial', path: '/tutorial', icon: <BookOpen size={18} /> },
+    { label: 'Dashboards', path: '/dashboards', icon: <BarChart2 size={18} /> }, // Ícone diferente aqui
+  ];
 
   return (
     <>
@@ -34,21 +35,14 @@ export default function Sidebar({ isOpen, onLogout }) {
 
         <button
           onClick={() => setDialogOpen(true)}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-md border border-transparent text-left text-red-600 hover:border-red-400 hover:bg-red-50 hover:shadow transition-all"
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-md border border-transparent text-left text-blue-600 hover:border-blue-400 hover:bg-blue-50 hover:shadow transition-all"
         >
-          <LogOut size={18} />
-          <span>Sair</span>
+          <Info size={18} />
+          <span>Sobre o EPANET</span>
         </button>
       </aside>
 
-      <LogoutDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onConfirm={() => {
-          setDialogOpen(false);
-          onLogout?.();
-        }}
-      />
+      <EpanetInfoDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </>
   );
 }
