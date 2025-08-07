@@ -127,11 +127,11 @@ export default function EpanetDashboard() {
   
       <Grid container spacing={2} mb={4} justifyContent="center" alignItems="stretch">
         {[
-          { label: 'Comprimento Total (m)', value: totalLength.toFixed(2) },
-          { label: 'Diâmetro Médio (mm)', value: avgDiameter.toFixed(2) },
+          { label: 'Comprimento Total ', value: totalLength.toFixed(2) },
+          { label: 'Diâmetro Médio ', value: avgDiameter.toFixed(2) },
           { label: 'Rugosidade Média', value: avgRoughness.toFixed(2) },
-          { label: 'Vazão Média (L/s)', value: avgFlow.toFixed(2) },
-          { label: 'Pressão Média (m)', value: avgPressure.toFixed(2) }
+          { label: 'Vazão Média ', value: avgFlow.toFixed(2) },
+          { label: 'Pressão Média ', value: avgPressure.toFixed(2) }
         ].map((item, index) => (
           <Grid
             item
