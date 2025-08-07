@@ -108,7 +108,7 @@ export default function EpanetDashboard() {
   });
 
   const diameterDistribution = Object.entries(diameterMap).map(([diameter, count]) => ({
-    label: `${diameter} mm`,
+    label: `${diameter} `,
     value: count
   }));
 
@@ -175,7 +175,7 @@ export default function EpanetDashboard() {
         <Grid item xs={12} md={10}>
           <Paper sx={{ p: 5, height: '100%' }}>
             <Typography variant="subtitle1" gutterBottom>
-              🔘 Distribuição de Diâmetro (valores reais)
+              🔘 Distribuição de Diâmetro 
             </Typography>
             <Box sx={{ width: '100%', maxWidth: 800, margin: '0 auto' }}>
               <ResponsiveContainer width="100%" height={360}>
