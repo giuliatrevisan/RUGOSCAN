@@ -3,7 +3,7 @@ import {
   Box, Typography, Grid, Card, CardContent, Paper, Button,
 } from '@mui/material';
 import {
-  BarChart, Bar,PieChart , Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
 const COLORS = ['#1976d2', '#0288d1', '#00acc1', '#26c6da', '#80deea'];
@@ -26,7 +26,6 @@ export default function EpanetDashboard() {
 
   const parseInpFile = (content) => {
     const lines = content.split(/\r?\n/);
-
     const pipes = [];
     const junctionPressures = {};
     const demands = {};
@@ -101,12 +100,17 @@ export default function EpanetDashboard() {
   const avgFlow = reportData.reduce((acc, r) => acc + r.flow, 0) / reportData.length;
   const avgPressure = reportData.reduce((acc, r) => acc + r.pressure, 0) / reportData.length;
 
-  const diameterDistribution = [
-    { label: '< 100 mm', value: reportData.filter(r => r.diameter < 100).length },
-    { label: '100-200 mm', value: reportData.filter(r => r.diameter >= 100 && r.diameter < 200).length },
-    { label: '200-300 mm', value: reportData.filter(r => r.diameter >= 200 && r.diameter < 300).length },
-    { label: '> 300 mm', value: reportData.filter(r => r.diameter >= 300).length },
-  ];
+  // Novo agrupamento por diâmetro real
+  const diameterMap = {};
+  reportData.forEach(pipe => {
+    const dia = pipe.diameter;
+    diameterMap[dia] = (diameterMap[dia] || 0) + 1;
+  });
+
+  const diameterDistribution = Object.entries(diameterMap).map(([diameter, count]) => ({
+    label: `${diameter} mm`,
+    value: count
+  }));
 
   return (
     <Box sx={{ p: 5, width: '100vw', boxSizing: 'border-box' }}>
@@ -121,7 +125,6 @@ export default function EpanetDashboard() {
         📊 EPANET - Dashboard da Rede Hidráulica
       </Typography>
   
-      {/* Linha dos 5 cards lado a lado */}
       <Grid container spacing={2} mb={4} justifyContent="center" alignItems="stretch">
         {[
           { label: 'Comprimento Total (m)', value: totalLength.toFixed(2) },
@@ -134,7 +137,7 @@ export default function EpanetDashboard() {
             item
             xs={12}
             sm={6}
-            md={2.4}  // Para dividir em 5 colunas no desktop (12/5 = 2.4)
+            md={2.4}
             key={index}
             sx={{ display: 'flex' }}
           >
@@ -152,54 +155,52 @@ export default function EpanetDashboard() {
         ))}
       </Grid>
   
-      <Box>
-  <Grid container spacing={5} justifyContent="center" alignItems="stretch">
-  <Grid item xs={12} md={7}>
-  <Paper sx={{ p: 5, height: '100%' }}>
-        <Typography variant="subtitle1" gutterBottom>
-          📏 Comprimento por Tubo
-        </Typography>
-        <ResponsiveContainer width="100%" height={360}>
-          <BarChart data={reportData.slice(0, 10)}>
-            <XAxis dataKey="id" hide />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="length" fill="#1976d2" />
-          </BarChart>
-        </ResponsiveContainer>
-      </Paper>
-    </Grid>
-    <Grid item xs={12} md={7}>
-      <Paper sx={{ p: 5, height: '100%' }}>
-        <Typography variant="subtitle1" gutterBottom>
-          🔘 Distribuição de Diâmetro
-        </Typography>
-        <ResponsiveContainer width="100%" height={360}>
-          <PieChart>
-            <Pie
-              data={diameterDistribution}
-              dataKey="value"
-              nameKey="label"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              label
-            >
-              {diameterDistribution.map((_, i) => (
-                <Cell key={i} fill={COLORS[i % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
-      </Paper>
-    </Grid>
-  </Grid>
-</Box>
-
-
+      <Grid container spacing={5} justifyContent="center" alignItems="stretch">
+        <Grid item xs={12} md={7}>
+          <Paper sx={{ p: 5, height: '100%' }}>
+            <Typography variant="subtitle1" gutterBottom>
+              📏 Comprimento por Tubo
+            </Typography>
+            <ResponsiveContainer width="100%" height={360}>
+              <BarChart data={reportData.slice(0, 10)}>
+                <XAxis dataKey="id" hide />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="length" fill="#1976d2" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Paper>
+        </Grid>
+  
+        <Grid item xs={12} md={10}>
+          <Paper sx={{ p: 5, height: '100%' }}>
+            <Typography variant="subtitle1" gutterBottom>
+              🔘 Distribuição de Diâmetro (valores reais)
+            </Typography>
+            <Box sx={{ width: '100%', maxWidth: 800, margin: '0 auto' }}>
+              <ResponsiveContainer width="100%" height={360}>
+                <PieChart>
+                  <Pie
+                    data={diameterDistribution}
+                    dataKey="value"
+                    nameKey="label"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+             
+                  >
+                    {diameterDistribution.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => `${value} tubos`} />
+                </PieChart>
+              </ResponsiveContainer>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
     </Box>
   );
-  
   
 }
